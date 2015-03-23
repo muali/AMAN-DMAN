@@ -1,0 +1,31 @@
+Aircraft landing
+
+There are currently 13 data files.
+
+These data files are the test problems used in the papers
+"Scheduling aircraft landings - the static case"
+by J.E. Beasley, M. Krishnamoorthy, Y.M. Sharaiha and
+D. Abramson, Transportation Science, vol.34, 2000, pp180-197; and
+"Displacement problem and dynamically scheduling aircraft landings"
+by J.E. Beasley, M. Krishnamoorthy, Y.M. Sharaiha and
+D. Abramson, Journal of the Operational Research Society, 
+vol.55, 2004, pp54-64.
+
+The test problems are the files:
+airland1, airland2, ..., airland13
+
+The first eight files are those used in the Transportation Science paper referred to above.
+
+The format of these data files is:
+number of planes (p), freeze time
+for each plane i (i=1,...,p):
+   appearance time, earliest landing time, target landing time,
+   latest landing time, penalty cost per unit of time for landing
+   before target, penalty cost per unit of time for landing
+   after target
+   for each plane j (j=1,...p): separation time required after 
+                                i lands before j can land
+
+The value of the optimal solution for each of these data
+files for a varying number of runways is given in the
+above papers.
