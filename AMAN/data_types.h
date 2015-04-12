@@ -23,7 +23,7 @@ struct input_data
 };
 
 using sequence = std::vector < aircraft > ;
-using schedule = std::vector < std::pair< id_type, double> > ;
+using schedule = std::vector < std::pair< id_type, uint64_t> > ;
 
 using sequencer = sequence(*) (const input_data&);
 using scheduler = schedule(*) (const input_data&, sequence);

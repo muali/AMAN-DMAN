@@ -27,12 +27,33 @@
     <ClInclude Include="data_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="or_lib_data_provider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sequencers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="schedulers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AMAN.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="or_lib_data_provider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="schedulers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
