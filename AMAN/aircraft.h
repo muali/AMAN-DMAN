@@ -18,6 +18,7 @@ namespace AMAN
             const boost::posix_time::ptime& min_time,
             const boost::posix_time::ptime& max_time,
             const boost::posix_time::ptime& appearance_time,
+            const boost::posix_time::ptime& target_time,
             double cost_per_minute_before,
             double cost_per_minute_after);
         
@@ -33,6 +34,7 @@ namespace AMAN
         boost::posix_time::ptime min_time_;
         boost::posix_time::ptime max_time_;
         boost::posix_time::ptime appearance_time_;
+        boost::posix_time::ptime target_time_;
         double cost_per_minute_before_;
         double cost_per_minute_after_;
     };
