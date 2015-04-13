@@ -7,6 +7,8 @@ namespace AMAN
     struct aircraft_id
     {
         static aircraft_id from_idx(size_t idx);
+        size_t hash() const;
+        bool operator== (const aircraft_id& rhs) const;
     private:
         aircraft_id(size_t value);
         size_t value_;
@@ -15,7 +17,8 @@ namespace AMAN
 
     struct aircraft
     {
-        aircraft(uint8_t turbulence_class, 
+        aircraft(const aircraft_id& id,
+            uint8_t turbulence_class, 
             const boost::posix_time::ptime& min_time,
             const boost::posix_time::ptime& max_time,
             const boost::posix_time::ptime& appearance_time,
@@ -23,6 +26,7 @@ namespace AMAN
             double cost_per_minute_before,
             double cost_per_minute_after);
         
+        aircraft_id id() const;
         double estimate_cost(const boost::posix_time::ptime& landing_time) const;
         bool is_valid_landing_time(const boost::posix_time::ptime& landing_time) const;
         double get_cost_per_second_before() const;
@@ -34,6 +38,7 @@ namespace AMAN
         uint8_t get_class() const;
 
     private:
+        aircraft_id id_;
         uint8_t turbulence_class_;
         boost::posix_time::ptime min_time_;
         boost::posix_time::ptime max_time_;
@@ -44,3 +49,15 @@ namespace AMAN
     };
 
 } // AMAN
+
+namespace std
+{
+    template <>
+    struct hash < AMAN::aircraft_id >
+    {
+        size_t operator()(const AMAN::aircraft_id& key_val) const
+        {
+            return key_val.hash();
+        }
+    };
+} // std

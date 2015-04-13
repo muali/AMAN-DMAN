@@ -39,6 +39,12 @@
     <ClInclude Include="schedulers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="aircraft.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="input_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -55,6 +61,12 @@
     </ClCompile>
     <ClCompile Include="schedulers.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="aircraft.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="input_data.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

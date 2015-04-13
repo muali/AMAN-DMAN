@@ -17,14 +17,28 @@ namespace AMAN
     }
     //-------------------------------------------------------------------------------------
 
-    aircraft::aircraft(uint8_t turbulence_class,
+    size_t aircraft_id::hash() const
+    {
+        return std::hash<size_t>()(value_);
+    }
+    //-------------------------------------------------------------------------------------
+
+    bool aircraft_id::operator== (const aircraft_id& rhs) const
+    {
+        return value_ == rhs.value_;
+    }
+    //-------------------------------------------------------------------------------------
+
+    aircraft::aircraft(const aircraft_id& id,
+        uint8_t turbulence_class,
         const boost::posix_time::ptime& min_time,
         const boost::posix_time::ptime& max_time,
         const boost::posix_time::ptime& appearance_time,
         const boost::posix_time::ptime& target_time,
         double cost_per_minute_before,
         double cost_per_minute_after)
-        : turbulence_class_(turbulence_class)
+        : id_(id)
+        , turbulence_class_(turbulence_class)
         , min_time_(min_time)
         , max_time_(max_time)
         , appearance_time_(appearance_time)
@@ -33,6 +47,12 @@ namespace AMAN
         , cost_per_second_after_(cost_per_minute_after / 60.)
     {
 
+    }
+    //-------------------------------------------------------------------------------------
+
+    aircraft_id aircraft::id() const
+    {
+        return id_;
     }
     //-------------------------------------------------------------------------------------
 
