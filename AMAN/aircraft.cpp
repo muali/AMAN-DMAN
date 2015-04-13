@@ -1,5 +1,7 @@
 #include "aircraft.h"
 
+#include <limits>
+
 namespace AMAN
 {
     aircraft_id aircraft_id::from_idx(size_t idx)
@@ -91,5 +93,10 @@ namespace AMAN
     {
         return target_time_;
     }
+    //-------------------------------------------------------------------------------------
 
+    uint8_t aircraft::get_class() const
+    {
+        return turbulence_class_;
+    }
 } //AMAN

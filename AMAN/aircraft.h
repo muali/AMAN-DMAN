@@ -31,6 +31,7 @@ namespace AMAN
         boost::posix_time::ptime get_max_time() const;
         boost::posix_time::ptime get_appearance_time() const;
         boost::posix_time::ptime get_target_time() const;
+        uint8_t get_class() const;
 
     private:
         uint8_t turbulence_class_;
