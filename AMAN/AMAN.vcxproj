@@ -84,6 +84,7 @@
     <ClInclude Include="dp.h" />
     <ClInclude Include="input_data.h" />
     <ClInclude Include="or_lib_data_provider.h" />
+    <ClInclude Include="schedule.h" />
     <ClInclude Include="schedulers.h" />
     <ClInclude Include="sequencers.h" />
     <ClInclude Include="stdafx.h" />
@@ -95,6 +96,7 @@
     <ClCompile Include="dp.cpp" />
     <ClCompile Include="input_data.cpp" />
     <ClCompile Include="or_lib_data_provider.cpp" />
+    <ClCompile Include="schedule.cpp" />
     <ClCompile Include="schedulers.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
