@@ -1,14 +1,21 @@
 #pragma once
 
-#include "data_types.h"
+#include "aircraft.h"
+#include "input_data.h"
 
-inline sequence fcfs(const input_data& data)
+#include <algorithm>
+#include <vector>
+
+namespace AMAN
 {
-    sequence seq = data.aircrafts;
-    sort(seq.begin(), seq.end(), 
-        [](aircraft a, aircraft b)
+    inline std::vector<aircraft> fcfs(const input_data& data)
     {
-        return a.appearance_time < b.appearance_time;
-    });
-    return seq;
+        std::vector<aircraft> seq = data.get_unordered();
+        std::sort(seq.begin(), seq.end(),
+            [](aircraft a, aircraft b)
+        {
+            return a.get_appearance_time() < b.get_appearance_time();
+        });
+        return seq;
+    }
 }
