@@ -80,7 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aircraft.h" />
-    <ClInclude Include="data_types.h" />
     <ClInclude Include="dp.h" />
     <ClInclude Include="input_data.h" />
     <ClInclude Include="or_lib_data_provider.h" />
