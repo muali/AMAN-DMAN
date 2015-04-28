@@ -1,5 +1,7 @@
 #pragma once
 
+#include "stdafx.h"
+
 #include "aircraft.h"
 #include "input_data.h"
 
@@ -17,6 +19,6 @@ namespace AMAN
         std::vector<aircraft> build_sequence(const input_data& data) const;
 
     private:
-        dp_sequencer_small small_;
+        shared_ptr<dp_sequencer_small> small_;
     };
 }

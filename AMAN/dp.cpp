@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "dp.h"
 #include "sequencers.h"
 #include "input_data.h"
@@ -8,6 +9,31 @@
 
 namespace AMAN
 {
+    struct small_dp_state
+    {
+        uint64_t mask;
+        uint8_t last_class;
+        std::shared_ptr<boost::posix_time::ptime> last_landing;
+    };
+}
+
+namespace std
+{
+    template <>
+    struct hash < AMAN::small_dp_state >
+    {
+        size_t operator() (const AMAN::small_dp_state& key_val) const
+        {
+            size_t seed = static_cast<size_t>(key_val.mask);
+            boost::hash_combine(seed, key_val.last_class);
+            boost::hash_combine(seed, key_val.last_landing->time_of_day().seconds());
+            return seed;
+        }
+    };
+}
+
+namespace AMAN
+{
     struct dp_sequencer_small
     {
         dp_sequencer_small(size_t max_shift, boost::posix_time::time_duration time_sampling);
@@ -15,13 +41,6 @@ namespace AMAN
     private:
         size_t max_shift_;
         boost::posix_time::time_duration time_sampling_;
-    };
-
-    struct small_dp_state
-    {
-        uint64_t mask;
-        uint8_t last_class;
-        std::shared_ptr<boost::posix_time::ptime> last_landing;
     };
 
     bool operator==(const small_dp_state& lhs, const small_dp_state& rhs)
@@ -56,7 +75,7 @@ namespace AMAN
         state initial_state{ 0, numeric_limits<uint8_t>::max(), make_shared<ptime>(data.get_start_time()) };
 
         unordered_map<state, state_r> dp;
-        dp[initial_state] = make_pair(0., initial_state);
+        dp[initial_state] = state_r{ 0., initial_state, -1 };
 
         queue<state_q> order;
         order.push(make_pair(0, initial_state));
@@ -106,7 +125,7 @@ namespace AMAN
         state best = initial_state;
         while (!order.empty())
         {
-            state_q current = order.front;
+            state_q current = order.front();
             order.pop();
             if (best == initial_state || dp[best].cost > dp[current.second].cost)
                 best = current.second;
@@ -124,33 +143,20 @@ namespace AMAN
     }
 
     dp_sequencer::dp_sequencer(size_t max_shift, boost::posix_time::time_duration time_sampling)
-        : small_(max_shift, time_sampling)
+        : small_(make_shared<dp_sequencer_small>(max_shift, time_sampling))
     {
     }
 
     std::vector<aircraft> dp_sequencer::build_sequence(const input_data& data) const
     {
         if (data.get_unordered().size() <= 64)
-            return small_.build_sequence(data);
+            return small_->build_sequence(data);
         //TODO: implement dp_sequencer_large
         assert(false);
     }
 }
 
-namespace std
-{
-    template <>
-    struct hash < AMAN::small_dp_state >
-    {
-        size_t operator() (const AMAN::small_dp_state& key_val) const
-        {
-            size_t seed = key_val.mask;
-            boost::hash_combine(seed, key_val.last_class);
-            boost::hash_combine(seed, key_val.last_landing->time_of_day().seconds());
-            return seed;
-        }
-    }
-}
+
 
 //dp_solver::dp_solver(size_t max_shift, uint64_t time_sampling)
 //    : max_shift_(max_shift)

@@ -1,5 +1,5 @@
-#include "schedulers.h"
 #include "stdafx.h"
+#include "schedulers.h"
 
 namespace AMAN
 {
@@ -144,6 +144,7 @@ shared_ptr<group> group::merge(shared_ptr<group> right)
             res->changes_->push(change);
         }
     }
+    return res;
 }
 
 bool group::optimize()

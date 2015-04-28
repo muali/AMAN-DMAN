@@ -14,15 +14,16 @@ namespace AMAN
         
         void set_separation(uint8_t class_last, uint8_t class_next, const boost::posix_time::time_duration& separation);
         boost::posix_time::time_duration get_separation(const aircraft& last, const aircraft& next) const;
-        boost::posix_time::time_duration get_separation(uint8_t class_last, uint8_t class_next) const; //TODO: implement it
+        boost::posix_time::time_duration get_separation(uint8_t class_last, uint8_t class_next) const;
 
         void add_aircraft(const aircraft& item);
         std::vector<aircraft> get_unordered() const;
 
-        boost::posix_time::ptime get_start_time() const; //TODO: implement it
+        boost::posix_time::ptime get_start_time() const;
 
     private:
         std::vector<aircraft> aircrafts_;
         std::vector<std::vector<boost::posix_time::time_duration>> separations_;
+        boost::posix_time::ptime start_time_;
     };
 }

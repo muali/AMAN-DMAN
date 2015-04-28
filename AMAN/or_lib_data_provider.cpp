@@ -7,6 +7,8 @@
 
 namespace AMAN
 {
+    std::vector<uint8_t> turbulence_class_assignment(const std::string& path, std::vector<std::vector<uint64_t>>& separations);
+
     or_lib_data_provider::or_lib_data_provider(const std::string& path)
         : path_(path)
         , current_test_(1)
@@ -76,7 +78,7 @@ namespace AMAN
 
     bool or_lib_data_provider::has_next()
     {
-        return current_test_ <= tests_count;
+        return current_test_ <= tests_count_;
     }
 
     std::vector<uint8_t> turbulence_class_assignment(const std::string& path, std::vector<std::vector<uint64_t>>& separations)
