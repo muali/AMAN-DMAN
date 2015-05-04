@@ -2,10 +2,6 @@
 #include "dp.h"
 #include "sequencers.h"
 #include "input_data.h"
-#include <memory>
-#include <vector>
-#include <queue>
-#include <boost\date_time\posix_time\posix_time.hpp>
 
 namespace AMAN
 {
@@ -13,7 +9,7 @@ namespace AMAN
     {
         uint64_t mask;
         uint8_t last_class;
-        std::shared_ptr<boost::posix_time::ptime> last_landing;
+        shared_ptr<ptime> last_landing;
     };
 }
 
@@ -36,11 +32,11 @@ namespace AMAN
 {
     struct dp_sequencer_small
     {
-        dp_sequencer_small(size_t max_shift, boost::posix_time::time_duration time_sampling);
+        dp_sequencer_small(size_t max_shift, time_duration time_sampling);
         std::vector<aircraft> build_sequence(const input_data& data) const;
     private:
         size_t max_shift_;
-        boost::posix_time::time_duration time_sampling_;
+        time_duration time_sampling_;
     };
 
     bool operator==(const small_dp_state& lhs, const small_dp_state& rhs)
@@ -50,7 +46,7 @@ namespace AMAN
             *lhs.last_landing == *rhs.last_landing;
     }
 
-    dp_sequencer_small::dp_sequencer_small(size_t max_shift, boost::posix_time::time_duration time_sampling)
+    dp_sequencer_small::dp_sequencer_small(size_t max_shift, time_duration time_sampling)
         : max_shift_(max_shift)
         , time_sampling_(time_sampling)
     {
@@ -59,7 +55,6 @@ namespace AMAN
     std::vector<aircraft> dp_sequencer_small::build_sequence(const input_data& data) const
     {
         using namespace std;
-        using namespace boost::posix_time;
         using state = small_dp_state;
         //using state_r = pair < double, state > ;
         using state_r = struct
@@ -142,7 +137,7 @@ namespace AMAN
         return result;
     }
 
-    dp_sequencer::dp_sequencer(size_t max_shift, boost::posix_time::time_duration time_sampling)
+    dp_sequencer::dp_sequencer(size_t max_shift, time_duration time_sampling)
         : small_(make_shared<dp_sequencer_small>(max_shift, time_sampling))
     {
     }

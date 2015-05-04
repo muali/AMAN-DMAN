@@ -14,4 +14,6 @@ namespace AMAN
     private:
         std::unordered_map<aircraft_id, boost::posix_time::ptime> storage_;
     };
+
+    void print_schedule(const schedule& sched, const vector<aircraft>& aircrafts);
 }

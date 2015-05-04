@@ -9,6 +9,7 @@ namespace AMAN
         static aircraft_id from_idx(size_t idx);
         size_t hash() const;
         bool operator== (const aircraft_id& rhs) const;
+        size_t get_value() const;
     private:
         aircraft_id(size_t value);
         size_t value_;

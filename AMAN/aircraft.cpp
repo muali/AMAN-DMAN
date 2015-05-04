@@ -18,6 +18,12 @@ namespace AMAN
     }
     //-------------------------------------------------------------------------------------
 
+    size_t aircraft_id::get_value() const
+    {
+        return value_;
+    }
+    //-------------------------------------------------------------------------------------
+
     size_t aircraft_id::hash() const
     {
         return std::hash<size_t>()(value_);
@@ -32,10 +38,10 @@ namespace AMAN
 
     aircraft::aircraft(const aircraft_id& id,
         uint8_t turbulence_class,
-        const boost::posix_time::ptime& min_time,
-        const boost::posix_time::ptime& max_time,
-        const boost::posix_time::ptime& appearance_time,
-        const boost::posix_time::ptime& target_time,
+        const ptime& min_time,
+        const ptime& max_time,
+        const ptime& appearance_time,
+        const ptime& target_time,
         double cost_per_minute_before,
         double cost_per_minute_after)
         : id_(id)
@@ -57,12 +63,12 @@ namespace AMAN
     }
     //-------------------------------------------------------------------------------------
 
-    double aircraft::estimate_cost(const boost::posix_time::ptime& landing_time) const
+    double aircraft::estimate_cost(const ptime& landing_time) const
     {
         if (!is_valid_landing_time(landing_time))
             return std::numeric_limits<double>::infinity();
-        boost::posix_time::time_duration dif = target_time_ - landing_time;
-        int32_t seconds_dif = dif.seconds();
+        time_duration dif = target_time_ - landing_time;
+        int32_t seconds_dif = dif.total_seconds();
         if (seconds_dif < 0)
         {
             return -cost_per_second_before_ * seconds_dif;
@@ -74,7 +80,7 @@ namespace AMAN
     }
     //-------------------------------------------------------------------------------------
 
-    bool aircraft::is_valid_landing_time(const boost::posix_time::ptime& landing_time) const
+    bool aircraft::is_valid_landing_time(const ptime& landing_time) const
     {
         return landing_time >= min_time_ && landing_time <= max_time_;
     }

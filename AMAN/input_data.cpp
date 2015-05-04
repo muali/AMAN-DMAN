@@ -3,14 +3,14 @@
 
 namespace AMAN
 {
-    input_data::input_data(const boost::posix_time::ptime& freeze_time, uint8_t class_count)
-        : separations_(class_count, std::vector<boost::posix_time::time_duration>(class_count))
+    input_data::input_data(const ptime& freeze_time, uint8_t class_count)
+        : separations_(class_count, vector<time_duration>(class_count))
         , start_time_(boost::posix_time::second_clock::local_time())
     {
     }
 
     void input_data::set_separation(uint8_t class_last, uint8_t class_next, 
-        const boost::posix_time::time_duration& separation)
+        const time_duration& separation)
     {
         separations_[class_last][class_next] = separation;
     }

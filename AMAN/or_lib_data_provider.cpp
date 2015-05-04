@@ -2,14 +2,14 @@
 #include "or_lib_data_provider.h"
 #include "aircraft.h"
 
-#include <boost\date_time\posix_time\posix_time.hpp>
-
 
 namespace AMAN
 {
-    std::vector<uint8_t> turbulence_class_assignment(const std::string& path, std::vector<std::vector<uint64_t>>& separations);
+    using std::string;
 
-    or_lib_data_provider::or_lib_data_provider(const std::string& path)
+    vector<uint8_t> turbulence_class_assignment(const string& path, vector<vector<uint64_t>>& separations);
+
+    or_lib_data_provider::or_lib_data_provider(const string& path)
         : path_(path)
         , current_test_(1)
     {
@@ -24,7 +24,7 @@ namespace AMAN
         assert(current_test_ <= tests_count_);
         using namespace std;
         using namespace boost::posix_time;
-        string path_to_test = path_ + prefix_ + to_string(current_test_);
+        string path_to_test = path_ + prefix_ + to_string(current_test_) + ".txt";
         ptime now = second_clock::local_time();
 
         vector<vector<uint64_t>> separations;
@@ -64,9 +64,9 @@ namespace AMAN
                 ));
         }
 
-        for (size_t i = 0; i < class_count; ++i)
+        for (uint8_t i = 0; i < class_count; ++i)
         {
-            for (size_t j = 0; j < class_count; ++j)
+            for (uint8_t j = 0; j < class_count; ++j)
             {
                 test.set_separation(i, j, minutes(separations[i][j]));
             }
@@ -81,7 +81,7 @@ namespace AMAN
         return current_test_ <= tests_count_;
     }
 
-    std::vector<uint8_t> turbulence_class_assignment(const std::string& path, std::vector<std::vector<uint64_t>>& separations)
+    vector<uint8_t> turbulence_class_assignment(const string& path, vector<vector<uint64_t>>& separations)
     {
         using namespace std;
         ifstream istream(path);
@@ -104,7 +104,7 @@ namespace AMAN
         vector<bool> used(count);
         vector<uint8_t> class_assignment(count);
         uint8_t next_class = 0;
-        for (size_t i = 0; i < count; ++count)
+        for (size_t i = 0; i < count; ++i)
         {
             if (used[i])
                 continue;
