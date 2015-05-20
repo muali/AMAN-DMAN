@@ -3,42 +3,45 @@
 
 namespace AMAN
 {
-    input_data::input_data(const ptime& freeze_time, uint8_t class_count)
-        : separations_(class_count, vector<time_duration>(class_count))
-        , start_time_(boost::posix_time::second_clock::local_time())
-    {
-    }
 
-    void input_data::set_separation(uint8_t class_last, uint8_t class_next, 
-        const time_duration& separation)
-    {
-        separations_[class_last][class_next] = separation;
-    }
+input_data::input_data(const ptime& start_time, uint8_t class_prev, uint8_t class_count)
+    : separations_(class_count, vector<time_duration>(class_count))
+    , start_time_(start_time)
+    , class_prev_(class_prev)
+{
+}
 
-    boost::posix_time::time_duration input_data::get_separation(const aircraft& last, const aircraft& next) const
-    {
-        return separations_[last.get_class()][next.get_class()];
-    }
+void input_data::set_separation(uint8_t class_last, uint8_t class_next, 
+    const time_duration& separation)
+{
+    separations_[class_last][class_next] = separation;
+}
 
-    boost::posix_time::time_duration input_data::get_separation(uint8_t class_last, uint8_t class_next) const
-    {
-        return separations_[class_last][class_next];
-    }
+time_duration input_data::get_separation(const aircraft& last, const aircraft& next) const
+{
+    return separations_[last.get_class()][next.get_class()];
+}
 
-    boost::posix_time::ptime input_data::get_start_time() const
-    {
-        //TO DO: use more significant value (last seating time of frozen aircraft)
-        return start_time_;
-    }
+time_duration input_data::get_separation(uint8_t class_last, uint8_t class_next) const
+{
+    return separations_[class_last][class_next];
+}
 
-    void input_data::add_aircraft(const aircraft& item)
-    {
-        aircrafts_.push_back(item);
-    }
+ptime input_data::get_start_time(uint8_t class_first) const
+{
+    if (class_prev_ < separations_.size())
+        return start_time_ + separations_[class_prev_][class_first];
+    return start_time_;
+}
 
-    std::vector<aircraft> input_data::get_unordered() const
-    {
-        return aircrafts_;
-    }
+void input_data::add_aircraft(const aircraft& item)
+{
+    aircrafts_.push_back(item);
+}
+
+std::vector<aircraft> input_data::get_unordered() const
+{
+    return aircrafts_;
+}
 
 }
