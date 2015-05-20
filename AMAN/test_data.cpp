@@ -1,0 +1,106 @@
+#include "stdafx.h"
+
+#include "test_data.h"
+
+namespace AMAN
+{
+
+simulated_aircraft::simulated_aircraft(const aircraft_id& id,
+    uint8_t turbulence_class,
+    const boost::posix_time::ptime& min_time,
+    const boost::posix_time::ptime& max_time,
+    const boost::posix_time::ptime& target_time,
+    double cost_per_minute_before,
+    double cost_per_minute_after)
+    : aircraft(id, turbulence_class, min_time, max_time, target_time, cost_per_minute_before, cost_per_minute_after)
+{
+}
+
+void simulated_aircraft::set_min_time(const ptime& min_time)
+{
+    min_time_ = min_time;
+}
+
+test_data::test_data(const time_duration& freeze_time, const ptime& start_time, uint8_t class_count)
+    : separations_(class_count, vector<time_duration>(class_count))
+    , freeze_time_(freeze_time)
+    , current_time_(start_time)
+{
+}
+
+void test_data::set_separation(uint8_t class_last, uint8_t class_next, const time_duration& separation)
+{
+    separations_[class_last][class_next] = separation;
+}
+
+void test_data::add_aircraft(const simulated_aircraft& item, ptime& appearence_time)
+{
+    aircrafts_.push_back(std::make_pair(appearence_time, item));
+}
+
+input_data test_data::next()
+{
+    ptime next_time(boost::posix_time::max_date_time);
+    for (auto item : aircrafts_)
+    {
+        if (item.first > current_time_)
+            next_time = std::min(next_time, item.first);
+    }
+
+    ptime start_time(current_time_);
+    uint8_t class_last = separations_.size();
+    for (auto item : aircrafts_)
+    {
+        if (item.first <= current_time_ && current_schedule_.get(item.second) < next_time + freeze_time_
+            && (start_time < current_schedule_.get(item.second) || class_last == separations_.size()))
+        {
+            start_time = current_schedule_.get(item.second);
+            class_last = item.second.get_class();
+        }
+    }
+
+    input_data result(start_time, class_last, separations_.size());
+    for (uint8_t i = 0; i < separations_.size(); ++i)
+    {
+        for (uint8_t j = 0; j < separations_[i].size(); ++j)
+        {
+            result.set_separation(i, j, separations_[i][j]);
+        }
+    }
+
+    for (auto item : aircrafts_)
+    {
+        if (item.first <= current_time_ && current_schedule_.get(item.second) < next_time + freeze_time_)
+            continue;
+        if (item.first <= next_time)
+        {
+            item.second.set_min_time(std::max(item.second.get_min_time(), next_time + freeze_time_));
+        }
+        result.add_aircraft(item.second);
+    }
+
+    current_time_ = next_time;
+    return result;
+}
+
+bool test_data::has_next()
+{
+    for (auto item : aircrafts_)
+    {
+        if (item.first > current_time_)
+            return true;
+    }
+    return false;
+}
+
+schedule test_data::merge(const schedule& new_schedule)
+{
+    for (auto item : aircrafts_)
+    {
+        if (item.first <= current_time_ && current_schedule_.get(item.second) > current_time_ + freeze_time_)
+            current_schedule_.set(item.second, new_schedule.get(item.second));
+    }
+    return current_schedule_;
+}
+
+}
