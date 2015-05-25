@@ -21,6 +21,7 @@ struct input_data
     std::vector<aircraft> get_unordered() const;
 
     boost::posix_time::ptime get_start_time(uint8_t class_first) const;
+    std::pair<boost::posix_time::ptime, uint8_t> get_start_time() const;
 
 private:
     std::vector<aircraft> aircrafts_;

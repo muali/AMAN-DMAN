@@ -29,12 +29,14 @@ double estimator::estimate(const input_data& data, vector<aircraft> sequence) co
     return total_cost;
 }
 
+
 schedule greedy_scheduler::do_scheduling(const input_data& data, const vector<aircraft>& sequence) const
 {
     using namespace std;
     using namespace boost::posix_time;
     schedule result;
-    ptime last_landing(data.get_start_time());
+    assert(sequence.size() > 0);
+    ptime last_landing(data.get_start_time(sequence[0].get_class()));
     for (size_t i = 0; i < sequence.size(); ++i)
     {
         time_duration separation;
@@ -76,8 +78,8 @@ using cost_change_pq = priority_queue < cost_change, vector<cost_change>, std::g
 struct group
 {       
     group() = default;
-    group(const aircraft& item, const time_duration& separation_to_next);
-    group(const aircraft& item, shared_ptr<group> prev, const time_duration& separation_to_next);
+    group(const aircraft& item, const time_duration& separation_to_next, const ptime& min_time);
+    group(const aircraft& item, shared_ptr<group> prev, const time_duration& separation_to_next, const ptime& min_time);
 
     shared_ptr<group> merge(shared_ptr<group> left, shared_ptr<group> right);
 
@@ -98,7 +100,7 @@ private:
 
 };
 
-group::group(const aircraft& item, const time_duration& separation_to_next)
+group::group(const aircraft& item, const time_duration& separation_to_next, const ptime& min_time)
     : last_seated_(item.get_max_time() + separation_to_next)
     , merge_time_(boost::posix_time::pos_infin)
     , really_shift_()
@@ -111,10 +113,11 @@ group::group(const aircraft& item, const time_duration& separation_to_next)
     changes_->push(cost_change(item.get_max_time() - item.get_target_time(),
         item.get_cost_per_second_after() + item.get_cost_per_second_before()));
     changes_->push(cost_change(item.get_max_time() - item.get_min_time(), std::numeric_limits<double>::infinity()));
+    changes_->push(cost_change(item.get_max_time() - min_time, std::numeric_limits<double>::infinity()));
 }
 
-group::group(const aircraft& item, shared_ptr<group> prev, const time_duration& separation_to_next)
-    : group(item, separation_to_next)
+group::group(const aircraft& item, shared_ptr<group> prev, const time_duration& separation_to_next, const ptime& min_time)
+    : group(item, separation_to_next, min_time)
 {
     merge_time_ = last_seated_ - separation_to_next - prev->last_seated_;
 }
@@ -197,7 +200,9 @@ schedule linear_scheduler::do_scheduling(const input_data& data, const vector<ai
     time_duration separation_to_next;
     if (sequence.size() > 1)
         separation_to_next = data.get_separation(sequence[0], sequence[1]);
-    groups.push_back(make_shared<group>(*sequence.begin(), separation_to_next));
+    assert(sequence.size() != 0);
+    ptime min_time = data.get_start_time(sequence[0].get_class());
+    groups.push_back(make_shared<group>(*sequence.begin(), separation_to_next, min_time));
     groups[0]->optimize();
     auto seq_it = sequence.begin() + 1;
     while (seq_it != sequence.end())
@@ -207,7 +212,7 @@ schedule linear_scheduler::do_scheduling(const input_data& data, const vector<ai
         else
             separation_to_next = time_duration();
 
-        shared_ptr<group> last = make_shared<group>(*seq_it, *groups.rbegin(), separation_to_next);
+        shared_ptr<group> last = make_shared<group>(*seq_it, *groups.rbegin(), separation_to_next, min_time);
         while (last->optimize())
         {
             shared_ptr<group> prev = *groups.rbegin();

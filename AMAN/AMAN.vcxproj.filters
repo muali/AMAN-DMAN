@@ -48,6 +48,9 @@
     <ClInclude Include="test_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sa_sequencer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sa_sequencer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

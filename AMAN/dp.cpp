@@ -67,7 +67,7 @@ namespace AMAN
 
         vector<aircraft> ordered = fcfs(data);
 
-        state initial_state{ 0, numeric_limits<uint8_t>::max(), make_shared<ptime>(data.get_start_time()) };
+        state initial_state{ 0, data.get_start_time().second, make_shared<ptime>(data.get_start_time().first) };
 
         unordered_map<state, state_r> dp;
         dp[initial_state] = state_r{ 0., initial_state, -1 };
@@ -86,7 +86,7 @@ namespace AMAN
                 if (current.second.mask && (1ULL << i))
                     continue;
 
-                ptime min_time = data.get_start_time();
+                ptime min_time = data.get_start_time().first;
                 if (current.first != 0)
                 {
                     min_time = *current.second.last_landing + data.get_separation(current.second.last_class, ordered[i].get_class());

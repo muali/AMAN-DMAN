@@ -55,6 +55,8 @@ template <class Scheduler, class Estimator>
 std::vector<aircraft> sa_sequencer<Scheduler, Estimator>::build_sequence(const input_data& data)
 {
     using namespace std;
+    uint32_t seed = chrono::high_resolution_clock::now().time_since_epoch().count();
+    rand_generator_.seed(seed);
     using clock = chrono::high_resolution_clock;
     clock::time_point begin = clock::now();
 
@@ -67,8 +69,7 @@ std::vector<aircraft> sa_sequencer<Scheduler, Estimator>::build_sequence(const i
 
     double temperature = initial_temp_;
     clock::duration td = clock::now() - begin;
-    int_distr_ = uniform_int_distribution<uint32_t>(0, result.size() - 1);
-    rand_generator_.seed(td);
+    int_distr_ = uniform_int_distribution<uint32_t>(0, best.size() - 1);
 
     while (temperature > min_temp_)
     {

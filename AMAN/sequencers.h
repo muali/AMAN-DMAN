@@ -15,7 +15,7 @@ inline std::vector<aircraft> fcfs(const input_data& data)
     std::sort(seq.begin(), seq.end(),
         [](aircraft a, aircraft b)
     {
-        return a.get_min_time() < b.get_max_time();
+        return a.get_min_time() < b.get_min_time();
     });
     return seq;
 }

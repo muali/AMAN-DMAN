@@ -3,6 +3,7 @@
 #include "aircraft.h"
 #include "input_data.h"
 #include "schedule.h"
+#include "schedulers.h"
 
 #include <boost\date_time\posix_time\posix_time.hpp>
 
@@ -34,12 +35,31 @@ struct test_data
     bool has_next();
     schedule merge(const schedule& new_schedule);
 
+    double estimate();
+
 private:
     std::vector<std::pair<boost::posix_time::ptime, simulated_aircraft>> aircrafts_;
     std::vector<std::vector<boost::posix_time::time_duration>> separations_;
     boost::posix_time::time_duration freeze_time_;
     boost::posix_time::ptime current_time_;
+    boost::posix_time::ptime next_time_;
     schedule current_schedule_;
 };
+
+
+//TO DO: replace template to inheritance
+template<class Sequencer>
+std::pair<schedule, double> perform_test(test_data data, Sequencer sequencer, const scheduler& scheduler)
+{
+    schedule total_schedule;
+    while (data.has_next())
+    {
+        input_data next = data.next();
+        vector<aircraft> sequence = sequencer.build_sequence(next);
+        schedule sched = scheduler.do_scheduling(next, sequence);
+        total_schedule = data.merge(sched);
+    }
+    return std::make_pair(total_schedule, data.estimate());
+}
 
 } //AMAN

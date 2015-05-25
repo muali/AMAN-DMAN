@@ -34,6 +34,11 @@ ptime input_data::get_start_time(uint8_t class_first) const
     return start_time_;
 }
 
+std::pair<boost::posix_time::ptime, uint8_t> input_data::get_start_time() const
+{
+    return std::make_pair(start_time_, class_prev_);
+}
+
 void input_data::add_aircraft(const aircraft& item)
 {
     aircrafts_.push_back(item);
