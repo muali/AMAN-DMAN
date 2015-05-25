@@ -8,14 +8,16 @@
 
 namespace AMAN
 {
-    inline std::vector<aircraft> fcfs(const input_data& data)
+
+inline std::vector<aircraft> fcfs(const input_data& data)
+{
+    std::vector<aircraft> seq = data.get_unordered();
+    std::sort(seq.begin(), seq.end(),
+        [](aircraft a, aircraft b)
     {
-        std::vector<aircraft> seq = data.get_unordered();
-        std::sort(seq.begin(), seq.end(),
-            [](aircraft a, aircraft b)
-        {
-            return a.get_appearance_time() < b.get_appearance_time();
-        });
-        return seq;
-    }
+        return a.get_min_time() < b.get_max_time();
+    });
+    return seq;
+}
+
 }
