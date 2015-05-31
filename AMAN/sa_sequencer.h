@@ -64,28 +64,59 @@ std::vector<aircraft> sa_sequencer<Scheduler, Estimator>::build_sequence(const i
 
     vector<aircraft> best = fcfs(data);
     double best_cost = estimator.estimate(data, best);
-    vector<aircraft> current = best;
-    double current_cost = best_cost;
 
-    double temperature = initial_temp_;
-    clock::duration td = clock::now() - begin;
-    int_distr_ = uniform_int_distribution<uint32_t>(0, best.size() - 1);
 
-    while (temperature > min_temp_)
+    for (int k = 0; k < 1; ++k)
     {
-        vector<aircraft> next = update(current);
-        double cost = estimator.estimate(data, next);
-        if (cost < best_cost)
+        vector<aircraft> current = best;
+        double current_cost = best_cost;
+        double temperature = initial_temp_;
+        clock::duration td = clock::now() - begin;
+        int_distr_ = uniform_int_distribution<uint32_t>(0, best.size() - 1);
+
+        int n_tryes = 0;
+        int step = 0;
+        while (temperature > min_temp_)
         {
-            best = next;
-            best_cost = cost;
+            bool ac = false;
+            step = 0;
+            while (!ac)
+            {
+                vector<aircraft> next = update(current);
+                double cost = estimator.estimate(data, next);
+                if (cost < best_cost)
+                {
+                    best = next;
+                    best_cost = cost;
+                }
+                if (accept(current_cost, cost, temperature))
+                {
+                    current = next;
+                    current_cost = cost;
+                    ac = true;
+                }
+                
+                if (step > next.size() * next.size() / 2)
+                {
+                    random_shuffle(current.begin(), current.end());
+                    current_cost = estimator.estimate(data, next);
+                    if (current_cost < best_cost)
+                    {
+                        best = current;
+                        best_cost = current_cost;
+                    }
+                    n_tryes++;
+                    if (n_tryes > 1)
+                        return best;
+                    ac = true;
+                }
+
+                ++step;
+            }
+            temperature = temp_decrease(temperature);
         }
-        if (accept(current_cost, cost, temperature))
-        {
-            current = next;
-            current_cost = cost;
-        }
-        temperature = temp_decrease(temperature);
+        cerr << step << endl;
+       // cerr << k << endl;
     }
 
     return best;
@@ -113,6 +144,11 @@ std::vector<aircraft> sa_sequencer<Scheduler, Estimator>::update(const std::vect
     std::vector<aircraft> result = state;
     uint32_t fst = int_distr_(rand_generator_);
     uint32_t snd = int_distr_(rand_generator_);
+    /*while (fst == snd)
+    {
+        fst = int_distr_(rand_generator_);
+        snd = int_distr_(rand_generator_);
+    }*/
     std::swap(result[fst], result[snd]);
     return result;
 }

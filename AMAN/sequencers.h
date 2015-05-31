@@ -20,4 +20,12 @@ inline std::vector<aircraft> fcfs(const input_data& data)
     return seq;
 }
 
+struct fcfs_sequencer
+{
+    std::vector<aircraft> build_sequence(const input_data& data)
+    {
+        return fcfs(data);
+    }
+};
+
 }

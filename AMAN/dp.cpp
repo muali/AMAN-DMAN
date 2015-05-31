@@ -80,10 +80,10 @@ namespace AMAN
             state_q current = order.front();
             order.pop();
             size_t end = min(current.first + max_shift_ + 1, ordered.size());
-            size_t force_landing = current.first - max_shift_;
-            for (size_t i = max(0U, force_landing); i != end; ++i)
+            int32_t force_landing = current.first - max_shift_;
+            for (size_t i = max(0, force_landing); i != end; ++i)
             {
-                if (current.second.mask && (1ULL << i))
+                if (current.second.mask & (1ULL << i))
                     continue;
 
                 ptime min_time = data.get_start_time().first;
@@ -91,7 +91,7 @@ namespace AMAN
                 {
                     min_time = *current.second.last_landing + data.get_separation(current.second.last_class, ordered[i].get_class());
                 }
-                min_time = min(min_time, ordered[i].get_min_time());
+                min_time = max(min_time, ordered[i].get_min_time());
                 
                 ptime max_time = max(min_time + seconds(1), ordered[i].get_target_time() + time_sampling_);
                 max_time = min(max_time, ordered[i].get_max_time() + seconds(1));
@@ -128,7 +128,7 @@ namespace AMAN
         if (best == initial_state)
             assert(false); //TODO: No solution
         vector<aircraft> result;
-        while (!(dp[best].st == initial_state))
+        while (!(best == initial_state))
         {
             result.push_back(ordered[dp[best].last]);
             best = dp[best].st;

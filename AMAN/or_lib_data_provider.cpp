@@ -38,12 +38,14 @@ test_data or_lib_data_provider::read_next()
     uint32_t freeze_time;
     istream >> count >> freeze_time;
 
-    test_data test(minutes(freeze_time), now, class_count);
+    //TO DO: invalid freeze_time (for tests)
+    test_data test(minutes(0), now, class_count);
 
     for (size_t i = 0; i < count; ++i)
     {
         uint32_t appearance_time, min_time, target_time, max_time;
         istream >> appearance_time >> min_time >> target_time >> max_time;
+        appearance_time = 0;
         double cost_before_target, cost_after_target;
         istream >> cost_before_target >> cost_after_target;
 

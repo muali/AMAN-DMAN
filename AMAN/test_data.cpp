@@ -127,10 +127,10 @@ double test_data::estimate()
     for (size_t i = 0; i < sequence.size(); ++i)
     {
         total_cost += sequence[i].estimate_cost(current_schedule_.get(sequence[i]));
-        if (i > 0)
+        for (size_t j = 0; j < i; ++j)
         {
-            time_duration separation_req = separations_[sequence[i - 1].get_class()][sequence[i].get_class()];
-            time_duration separation = current_schedule_.get(sequence[i]) - current_schedule_.get(sequence[i - 1]);
+            time_duration separation_req = separations_[sequence[j].get_class()][sequence[i].get_class()];
+            time_duration separation = current_schedule_.get(sequence[i]) - current_schedule_.get(sequence[j]);
             if (separation < separation_req)
                 total_cost = std::numeric_limits<double>::infinity();
         }

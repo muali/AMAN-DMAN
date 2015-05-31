@@ -61,9 +61,20 @@ struct cost_change
 {
     time_duration at_;
     double change_;
+
+    cost_change()
+    {
+    }
+
     cost_change(const time_duration& at, double change)
         : at_(at)
         , change_(change)
+    {
+    }
+
+    cost_change(cost_change&& other)
+        : at_(std::move(other.at_))
+        , change_(std::move(other.change_))
     {
     }
 };
@@ -112,8 +123,10 @@ group::group(const aircraft& item, const time_duration& separation_to_next, cons
 {
     changes_->push(cost_change(item.get_max_time() - item.get_target_time(),
         item.get_cost_per_second_after() + item.get_cost_per_second_before()));
-    changes_->push(cost_change(item.get_max_time() - item.get_min_time(), std::numeric_limits<double>::infinity()));
-    changes_->push(cost_change(item.get_max_time() - min_time, std::numeric_limits<double>::infinity()));
+    changes_->push(cost_change(item.get_max_time() - std::max(item.get_min_time(), min_time),
+        std::numeric_limits<double>::infinity()));
+   /* changes_->push(cost_change(item.get_max_time() - min_time, 
+        std::numeric_limits<double>::infinity()));*/
 }
 
 group::group(const aircraft& item, shared_ptr<group> prev, const time_duration& separation_to_next, const ptime& min_time)

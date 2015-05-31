@@ -15,7 +15,7 @@ namespace AMAN
 
     void print_schedule(const schedule& sched, const vector<aircraft>& aircrafts)
     {
-        using boost::posix_time::to_simple_string;
+        /*using boost::posix_time::to_simple_string;
         for (auto& item : aircrafts)
         {
             std::cerr << item.id().get_value() 
@@ -23,7 +23,7 @@ namespace AMAN
                 << '\t' << to_simple_string(item.get_min_time())
                 << '\t' << to_simple_string(item.get_max_time())
                 << '\t' << to_simple_string(sched.get(item)) << std::endl;
-        }
+        }*/
     }
 
 }
