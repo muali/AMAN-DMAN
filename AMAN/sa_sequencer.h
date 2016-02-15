@@ -79,7 +79,6 @@ std::vector<aircraft> sa_sequencer<Scheduler, Estimator>::build_sequence(const i
         while (temperature > min_temp_)
         {
             bool ac = false;
-            step = 0;
             while (!ac)
             {
                 vector<aircraft> next = update(current);

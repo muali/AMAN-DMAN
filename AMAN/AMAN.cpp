@@ -42,6 +42,23 @@ void schedulers_test()
     }
 }
 
+
+void print_ordered(schedule sched, int count)
+{
+    vector<pair<ptime, int>> ord;
+    for (int i = 0; i < count; ++i)
+    {
+        ord.push_back(make_pair(sched.get(aircraft_id::from_idx(i)), i));        
+    }
+
+    sort(ord.begin(), ord.end());
+    for (int i = 0; i < count; ++i)
+    {
+        cout << ord[i].second << " ";
+    }
+    cout << endl;
+}
+
 void sequencers_test()
 {
     or_lib_data_provider data_source("dataset\\");
@@ -55,16 +72,17 @@ void sequencers_test()
         double start = clock();
         pair<schedule, double> result = perform_test(data, sequencer, scheduler);
         double time = (clock() - start) / CLOCKS_PER_SEC;
+        print_ordered(result.first, 10);
         cout << "Dataset: " << dataset << endl;
         cout << "Cost: " << result.second << endl;
         cout << "Time: " << time << endl;
-        ++dataset;
+        dataset++;
     }
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-   // schedulers_test();
+    //schedulers_test();
     sequencers_test();
 	return 0;
 }

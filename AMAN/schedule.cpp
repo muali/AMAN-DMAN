@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "schedule.h"
+#include "input_data.h"
 
 namespace AMAN
 {
@@ -13,17 +14,23 @@ namespace AMAN
         return storage_.at(aircraft_item.id());
     }
 
-    void print_schedule(const schedule& sched, const vector<aircraft>& aircrafts)
+    ptime schedule::get(const aircraft_id& id) const
     {
-        /*using boost::posix_time::to_simple_string;
-        for (auto& item : aircrafts)
-        {
-            std::cerr << item.id().get_value() 
-                << '\t' << to_simple_string(item.get_target_time()) 
-                << '\t' << to_simple_string(item.get_min_time())
-                << '\t' << to_simple_string(item.get_max_time())
-                << '\t' << to_simple_string(sched.get(item)) << std::endl;
-        }*/
+        return storage_.at(id);
+    }
+
+    void print_schedule(const schedule& sched, const vector<aircraft>& aircrafts, const input_data& data)
+    {
+        using namespace boost::posix_time;
+        //ptime start = data.get_start_time().first;
+        //for (auto& item : aircrafts)
+        //{
+        //    std::cerr << item.id().get_value() 
+        //        << '\t' << (item.get_target_time() - start).total_seconds() / 60
+        //        << '\t' << (item.get_min_time() - start).total_seconds() / 60
+        //        << '\t' << (item.get_max_time() - start).total_seconds() / 60
+        //        << '\t' << (sched.get(item) - start).total_seconds() / 60 << std::endl;
+        //}
     }
 
 }

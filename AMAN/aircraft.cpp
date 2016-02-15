@@ -68,13 +68,13 @@ double aircraft::estimate_cost(const ptime& landing_time) const
         return std::numeric_limits<double>::infinity();
     time_duration dif = target_time_ - landing_time;
     int32_t seconds_dif = dif.total_seconds();
-    if (seconds_dif < 0)
+    if (seconds_dif > 0)
     {
-        return -cost_per_second_before_ * seconds_dif;
+        return cost_per_second_before_ * seconds_dif;
     }
     else
     {
-        return cost_per_second_after_ * seconds_dif;
+        return -cost_per_second_after_ * seconds_dif;
     }
 }
 //-------------------------------------------------------------------------------------

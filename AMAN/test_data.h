@@ -58,7 +58,7 @@ std::pair<schedule, double> perform_test(test_data data, Sequencer sequencer, co
         vector<aircraft> sequence = sequencer.build_sequence(next);
         schedule sched = scheduler.do_scheduling(next, sequence);
         total_schedule = data.merge(sched);
-        print_schedule(total_schedule, sequence);
+        print_schedule(total_schedule, sequence, next);
     }
     return std::make_pair(total_schedule, data.estimate());
 }
